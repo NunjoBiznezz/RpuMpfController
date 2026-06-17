@@ -1288,4 +1288,87 @@ uint8_t RPU_SetDisplayText(int displayNumber, char* text, bool blankByLength) {
       LampManager::getInstance().clearLampStates();
    }
 
+#if (RPU_MPU_ARCHITECTURE < 10)
+
+   // ISR: fires at RPU_OS_SOFTWARE_DISPLAY_INTERRUPT_INTERVAL rate (~320 Hz).
+   // Each call advances one display × digit position and drives lamps.
+   //
+   // Display mux format for Stern arch-1 (needs verification against Trident
+   // schematics before first hardware test):
+   //   U10A write: upper nibble = display index, lower nibble = BCD digit value
+   //   U11A write: bit mask with 1 bit set for the active digit column (0-5)
+   //   U10A CA2 strobe latches the display data into the board's shift register.
+   ISR(TIMER1_COMPA_vect) {
+      static uint8_t displayState = 0; // 0 .. (5 * RPU_OS_NUM_DIGITS - 1)
+      static int     interruptCount = 0;
+      interruptCount++;
+
+      uint8_t disp = displayState / RPU_OS_NUM_DIGITS;
+      uint8_t dig  = displayState % RPU_OS_NUM_DIGITS;
+
+      // Blank digit output before switching to avoid ghosting
+      RPU_DataWrite(ADDRESS_U11_A, 0x00);
+
+      volatile uint8_t* digits = DisplayManager::getDisplayDigits(disp);
+      uint8_t bcdVal = digits[dig] & 0x0F;
+
+      // Write display select + BCD to shared data bus
+      RPU_DataWrite(ADDRESS_U10_A, (uint8_t)((disp << 4) | bcdVal));
+
+      // Strobe display latch via CA2 (set then clear bit 3 of control register)
+      RPU_DataWrite(ADDRESS_U10_A_CONTROL,
+                    RPU_DataRead(ADDRESS_U10_A_CONTROL) | 0x08);
+      RPU_DataWrite(ADDRESS_U10_A_CONTROL,
+                    RPU_DataRead(ADDRESS_U10_A_CONTROL) & 0xF7);
+
+      // Enable digit column if the digit-enable mask includes this position
+      uint8_t enableMask = DisplayManager::getDisplayDigitEnable(disp);
+      if (enableMask & (1 << dig)) {
+         RPU_DataWrite(ADDRESS_U11_A, (uint8_t)(1 << dig));
+      }
+
+      displayState++;
+      if (displayState >= 5 * RPU_OS_NUM_DIGITS) displayState = 0;
+
+      // Lamp multiplexing runs on every interrupt
+      LampManager::getInstance().multiplexLamps(interruptCount);
+   }
+
+   unsigned long RPU_InitializeMPU(unsigned long initOptions,
+                                   uint8_t       creditResetSwitch) {
+      (void)initOptions;
+      (void)creditResetSwitch;
+
+      InitializeU10PIA();
+      InitializeU11PIA();
+
+      // Timer1: CTC mode, prescaler 1024
+      // Fires at 16 MHz / 1024 / (RPU_OS_SOFTWARE_DISPLAY_INTERRUPT_INTERVAL + 1) ≈ 319 Hz
+      cli();
+      TCCR1A = 0;
+      TCCR1B = (1 << WGM12) | (1 << CS12) | (1 << CS10);
+      OCR1A  = RPU_OS_SOFTWARE_DISPLAY_INTERRUPT_INTERVAL;
+      TIMSK1 |= (1 << OCIE1A);
+      sei();
+
+      return RPU_RET_NO_ERRORS;
+   }
+
+#endif // RPU_MPU_ARCHITECTURE < 10
+
+   // Stub for architectures >= 10 (not needed for Milestone 1)
+#if (RPU_MPU_ARCHITECTURE >= 10)
+   unsigned long RPU_InitializeMPU(unsigned long initOptions,
+                                   uint8_t       creditResetSwitch) {
+      (void)initOptions;
+      (void)creditResetSwitch;
+      RPU_InitializePIAs();
+      return RPU_RET_NO_ERRORS;
+   }
+#endif
+
+   void RPU_Update(unsigned long currentTime) {
+      (void)currentTime;
+   }
+
 }
