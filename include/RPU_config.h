@@ -24,6 +24,24 @@
   Use this file to set game_-specific and hardware-specific parameters
 ***/
 
+// Board dispatch — exactly one BOARD_* token must be defined per environment
+#if defined(BOARD_RPU_V3)
+#  include "boards/rpu_v3.h"
+#elif defined(BOARD_RPU_V4)
+#  include "boards/rpu_v4.h"
+#elif defined(BOARD_RPU_V102)
+#  include "boards/rpu_v102.h"
+#else
+#  error "No board defined. Add -DBOARD_RPU_V3, -DBOARD_RPU_V4, or -DBOARD_RPU_V102 to your environment."
+#endif
+
+// Machine dispatch — exactly one MACHINE_* token must be defined per environment
+#if defined(MACHINE_STERN_TRIDENT)
+#  include "machines/stern_trident.h"
+#else
+#  error "No machine defined. Add -DMACHINE_STERN_TRIDENT (or another machine token) to your environment."
+#endif
+
 #include <stdint.h>
 
 namespace RPU {
@@ -59,7 +77,7 @@ namespace RPU {
     */
 
 #if !defined(RPU_OS_HARDWARE_REV)
-#error "RPU_OS_HARDWARE_REV not defined. Please define it in platformio.ini or in RPU_config.h"
+#error "RPU_OS_HARDWARE_REV not defined. Set a BOARD_* token (e.g. -DBOARD_RPU_V102) in your platformio.ini environment."
 #endif
 
 // Available Architectures (0-9 is for B/S Boards, 10-19 is for W)
@@ -68,7 +86,7 @@ namespace RPU {
 //  RPU_MPU_ARCHITECTURE 13 = Sys 7
 //  RPU_MPU_ARCHITECTURE 15 = Sys 11
 #if !defined(RPU_MPU_ARCHITECTURE)
-#error "RPU_MPU_ARCHITECTURE not defined. Please define it in platformio.ini or in RPU_config.h"
+#error "RPU_MPU_ARCHITECTURE not defined. Set a BOARD_* token (e.g. -DBOARD_RPU_V102) in your platformio.ini environment."
 #endif
 
 // Some boards will assume a 6800 is the processor (RPU_OS_HARDWARE_REV 1 through 4)
@@ -77,7 +95,7 @@ namespace RPU {
 // Define RPU_MPU_BUILD_FOR_6800 with a 0 for 6802 or 6808, and with
 // a 1 for 6800
 #if !defined(RPU_MPU_BUILD_FOR_6800)
-#error "RPU_MPU_BUILD_FOR_6800 not defined. Please define it in platformio.ini or in RPU_config.h"
+#error "RPU_MPU_BUILD_FOR_6800 not defined. Set a BOARD_* token (e.g. -DBOARD_RPU_V102) in your platformio.ini environment."
 #endif
 
 // These defines allow this configuration to eliminate some functions
