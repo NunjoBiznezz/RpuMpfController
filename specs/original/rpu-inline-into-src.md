@@ -1,6 +1,6 @@
 # Spec: Move RPU library into src/include
 
-**Status:** Draft — awaiting sign-off  
+**Status:** Approved — implemented  
 **Date:** 2026-06-17  
 **Depends on:** milestone-1-attract-mode.md, multi-machine-config-headers.md (both approved)
 

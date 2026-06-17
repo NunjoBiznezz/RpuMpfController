@@ -1,6 +1,6 @@
 # Spec: Milestone 1 — Attract Mode LISY Bridge
 
-**Status:** Draft — awaiting sign-off  
+**Status:** Approved — implemented  
 **Target environment:** `env:mpf_controller_v102` (RPU v102, Stern Trident)  
 **MPF version:** 0.80  
 **Date:** 2026-06-17

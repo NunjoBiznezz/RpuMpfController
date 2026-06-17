@@ -1,6 +1,6 @@
 # Spec: Multi-machine config headers (Option A)
 
-**Status:** Draft — awaiting sign-off  
+**Status:** Approved — implemented  
 **Date:** 2026-06-17  
 **Depends on:** milestone-1-attract-mode.md (approved)
 

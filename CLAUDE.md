@@ -8,7 +8,10 @@ Questions, analysis, and exploration requests ("could we...", "would it be possi
 no edits, no new files. When in doubt, answer first and ask before touching anything.
 
 ## Workflow
-All changes must be driven by a spec under specs/original/ or specs/house-rules/.
-No implementation without an approved spec. If a change is requested that lacks a spec,
-write the spec first and get explicit sign-off before touching any code or config.
-See specs/overview.md for the full workflow.
+Changes do not require per-change spec approval. All changes must conform to:
+- The porting and customization guidelines in `README.md`
+- The goal-level specs in `specs/original/` and `specs/house-rules/`
+
+Specs describe *what the system should do and why*, not implementation task lists.
+If a requested change conflicts with an existing spec or README guideline, flag the
+conflict before proceeding.

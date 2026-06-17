@@ -1,6 +1,6 @@
 # Spec: Board/machine config split
 
-**Status:** Draft — awaiting sign-off  
+**Status:** Approved — implemented  
 **Date:** 2026-06-17  
 **Depends on:** rpu-inline-into-src.md (approved)
 
