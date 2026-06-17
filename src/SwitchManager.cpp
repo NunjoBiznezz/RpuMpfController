@@ -7,7 +7,7 @@ volatile uint8_t SwitchManager::SwitchesMinus2[NUM_SWITCH_BYTES] = {};
 volatile uint8_t SwitchManager::SwitchesMinus1[NUM_SWITCH_BYTES] = {};
 volatile uint8_t SwitchManager::SwitchesNow[NUM_SWITCH_BYTES] = {};
 CircularStack<uint8_t, 60, 0xFF> SwitchManager::Stack;
-int SwitchManager::NumGameSwitches = 0;
+int SwitchManager::NumGameSwitches = MACHINE_NUM_SWITCHES;
 int SwitchManager::NumGamePrioritySwitches = 0;
 const PlayfieldAndCabinetSwitch* SwitchManager::GameSwitches = nullptr;
 
