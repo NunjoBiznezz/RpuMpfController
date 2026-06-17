@@ -1,0 +1,10 @@
+{
+  "name": "RPU",
+  "version": "1.0.0",
+  "description": "Retro Pinball Upgrade library",
+  "build": {
+    "includeDir": "include"
+  },
+  "frameworks": ["arduino"],
+  "platforms": ["atmelavr"]
+}

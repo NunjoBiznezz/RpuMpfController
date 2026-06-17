@@ -1,0 +1,10 @@
+{
+  "name": "WavTrigger",
+  "version": "1.0.0",
+  "description": "WavTrigger audio board control library",
+  "build": {
+    "includeDir": "include"
+  },
+   "frameworks": "*",
+   "platforms": "*"
+}
