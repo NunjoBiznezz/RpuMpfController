@@ -11,7 +11,7 @@
 // Stern Trident (1979) — machine resource counts for the LISY protocol handshake.
 // Source: MissionPinball/machine_files/stern_trident.yaml
 
-constexpr uint8_t MACHINE_NUM_SWITCHES   = 34;
+constexpr uint8_t MACHINE_NUM_SWITCHES   = 36; // We added 2 switches for the Stern Trident machine for adjustments menu
 constexpr uint8_t MACHINE_NUM_SOLENOIDS  = 15;
 constexpr uint8_t MACHINE_NUM_LAMPS      = 60;
 constexpr uint8_t MACHINE_NUM_DISPLAYS   = 6;

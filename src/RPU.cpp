@@ -39,13 +39,13 @@
     *   Defines and library variables
     */
 #if !defined(RPU_MPU_BUILD_FOR_6800) || (RPU_MPU_BUILD_FOR_6800 == 1)
-   static bool UsesM6800Processor = true;
+constexpr bool UsesM6800Processor = true;
 #if (RPU_MPU_ARCHITECTURE > 11) && (RPU_OS_HARDWARE_REV < 102)
 #error \
     "Architecture > 11 doesn't make sense with RPU_MPU_BUILD_FOR_6800=1. Set RPU_MPU_BUILD_FOR_6800 to 0 in RPU_Config.h or choose a different RPU_MPU_ARCHITECTURE"
 #endif
 #else
-   static bool UsesM6800Processor = false;
+constexpr bool UsesM6800Processor = false;
 #endif
 
 #if (RPU_MPU_ARCHITECTURE < 10)
