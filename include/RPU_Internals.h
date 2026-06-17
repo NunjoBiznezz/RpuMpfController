@@ -22,7 +22,6 @@
 
 #include <stdint.h>
 
-namespace RPU {
 
 // Internal switch definitions
 constexpr uint8_t SW_SELF_TEST_SWITCH = 0x7F;
@@ -152,5 +151,4 @@ constexpr uint8_t SOL_NONE = 0x0F;
 
 #endif
 
-} // namespace RPU
 

@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include "RPU_config.h"
 
-namespace RPU {
 
 class DisplayManager {
 public:
@@ -83,6 +82,5 @@ private:
 #endif
 };
 
-} // namespace RPU
 
 #endif // DISPLAY_MANAGER_H

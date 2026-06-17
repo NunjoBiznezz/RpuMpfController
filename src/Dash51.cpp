@@ -3,7 +3,6 @@
 
 #ifdef RPU_OS_USE_DASH51
 
-namespace RPU {
 
 void RPU_PlaySoundDash51(uint8_t soundByte) {
    // This device has 32 possible sounds, but they're mapped to
@@ -60,6 +59,5 @@ void RPU_PlaySoundDash51(uint8_t soundByte) {
    interrupts();
 }
 
-} // namespace RPU
 
 #endif

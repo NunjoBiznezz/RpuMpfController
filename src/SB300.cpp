@@ -9,7 +9,6 @@
 //
 
 
-namespace RPU {
    void RPU_PlaySB300SquareWave(uint8_t soundRegister, uint8_t soundByte) {
       RPU_DataWrite(ADDRESS_SB300_SQUARE_WAVES + soundRegister, soundByte);
    }

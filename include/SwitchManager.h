@@ -5,7 +5,6 @@
 #include "RPU_config.h"
 #include "CircularStack.h"
 
-namespace RPU {
 
 struct PlayfieldAndCabinetSwitch;
 
@@ -47,6 +46,5 @@ private:
 #endif
 };
 
-} // namespace RPU
 
 #endif // SWITCH_MANAGER_H

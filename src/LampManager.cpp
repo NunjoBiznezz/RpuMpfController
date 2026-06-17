@@ -4,16 +4,15 @@
 #include <Arduino.h>
 
 // Define the static members
-volatile uint8_t RPU::LampManager::LampStates[8];
-volatile uint8_t RPU::LampManager::LampDim1[8];
-volatile uint8_t RPU::LampManager::LampDim2[8];
-volatile uint8_t RPU::LampManager::LampFlashPeriod[64];
-volatile uint8_t RPU::LampManager::DimDivisor1 = 2;
-volatile uint8_t RPU::LampManager::DimDivisor2 = 2;
+volatile uint8_t LampManager::LampStates[8];
+volatile uint8_t LampManager::LampDim1[8];
+volatile uint8_t LampManager::LampDim2[8];
+volatile uint8_t LampManager::LampFlashPeriod[64];
+volatile uint8_t LampManager::DimDivisor1 = 2;
+volatile uint8_t LampManager::DimDivisor2 = 2;
 
-const uint8_t RPU::LampManager::BitShiftValues[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
+const uint8_t LampManager::BitShiftValues[8] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80};
 
-namespace RPU {
 
 LampManager& LampManager::getInstance() {
     static LampManager instance;
@@ -253,4 +252,3 @@ void LampManager::multiplexAuxLamps(int numberOfU10Interrupts) {
     }
 }
 
-} // namespace RPU

@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-namespace RPU {
 
 // Lamp management class for RPU
 class LampManager {
@@ -60,6 +59,5 @@ private:
     static const uint8_t BitShiftValues[8];
 };
 
-} // namespace RPU
 
 #endif // LAMP_MANAGER_H

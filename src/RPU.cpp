@@ -30,7 +30,6 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 
-namespace RPU {
 
 #ifdef RPU_OS_USE_DIP_SWITCHES
   void ReadDipSwitches();
@@ -1371,4 +1370,3 @@ uint8_t RPU_SetDisplayText(int displayNumber, char* text, bool blankByLength) {
       (void)currentTime;
    }
 
-}

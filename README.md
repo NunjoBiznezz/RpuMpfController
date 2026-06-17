@@ -144,7 +144,7 @@ pio device monitor -e mega_hello
 
 ```
 include/
-  RPU.h               Public API (namespace RPU)
+  RPU.h               Public API
   RPU_config.h        Derivation layer — reads board+machine, computes constants
   lisy_protocol.h     LISY command byte constants
 

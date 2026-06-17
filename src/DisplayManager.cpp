@@ -3,26 +3,26 @@
 #include "RPU_Internals.h"
 #include <Arduino.h>
 
-volatile uint8_t RPU::DisplayManager::DisplayDigits[5][RPU_OS_NUM_DIGITS];
-volatile uint8_t RPU::DisplayManager::DisplayDigitEnable[5];
-volatile bool    RPU::DisplayManager::DisplayOffCycle = false;
-volatile uint8_t RPU::DisplayManager::CurrentDisplayDigit = 0;
+volatile uint8_t DisplayManager::DisplayDigits[5][RPU_OS_NUM_DIGITS];
+volatile uint8_t DisplayManager::DisplayDigitEnable[5];
+volatile bool    DisplayManager::DisplayOffCycle = false;
+volatile uint8_t DisplayManager::CurrentDisplayDigit = 0;
 
 #if (RPU_MPU_ARCHITECTURE >= 10)
-volatile uint8_t RPU::DisplayManager::DisplayCreditDigits[2];
-volatile uint8_t RPU::DisplayManager::DisplayCreditDigitEnable = 0;
-volatile uint8_t RPU::DisplayManager::DisplayBIPDigits[2];
-volatile uint8_t RPU::DisplayManager::DisplayBIPDigitEnable = 0;
+volatile uint8_t DisplayManager::DisplayCreditDigits[2];
+volatile uint8_t DisplayManager::DisplayCreditDigitEnable = 0;
+volatile uint8_t DisplayManager::DisplayBIPDigits[2];
+volatile uint8_t DisplayManager::DisplayBIPDigitEnable = 0;
 #endif
 
 #if (RPU_MPU_ARCHITECTURE >= 13)
-volatile uint8_t RPU::DisplayManager::DisplayCommas = 0;
+volatile uint8_t DisplayManager::DisplayCommas = 0;
 #endif
 
 #if (RPU_MPU_ARCHITECTURE == 15)
-volatile uint8_t RPU::DisplayManager::DisplayText[2][RPU_OS_NUM_DIGITS];
+volatile uint8_t DisplayManager::DisplayText[2][RPU_OS_NUM_DIGITS];
 
-const uint16_t RPU::DisplayManager::SevenSegmentNumbers[10] = {
+const uint16_t DisplayManager::SevenSegmentNumbers[10] = {
    0x3F, /* 0 */
    0x06, /* 1 */
    0x5B, /* 2 */
@@ -35,7 +35,7 @@ const uint16_t RPU::DisplayManager::SevenSegmentNumbers[10] = {
    0x6F  /* 9 */
 };
 
-const uint16_t RPU::DisplayManager::FourteenSegmentASCII[96] = {
+const uint16_t DisplayManager::FourteenSegmentASCII[96] = {
    0x0000, /*   */
    0x0006, /* ! */
    0x0102, /* " */
@@ -135,7 +135,6 @@ const uint16_t RPU::DisplayManager::FourteenSegmentASCII[96] = {
 };
 #endif
 
-namespace RPU {
 
 DisplayManager& DisplayManager::getInstance() {
     static DisplayManager instance;
@@ -494,4 +493,3 @@ uint8_t DisplayManager::setDisplayText(int displayNumber, char* text, bool blank
 }
 #endif
 
-} // namespace RPU

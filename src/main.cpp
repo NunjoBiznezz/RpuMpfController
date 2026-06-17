@@ -3,7 +3,6 @@
 #include "RPU_config.h"
 #include "lisy_protocol.h"
 
-using namespace RPU;
 
 constexpr uint32_t SERIAL_BAUD = 115200;
 

@@ -9,7 +9,6 @@
 #include "RPU.h"
 #include "RPU_Internals.h"
 
-namespace RPU {
 
 void RPU_PlaySoundSAndT(uint8_t soundByte) {
   uint8_t oldSolenoidControlByte, soundLowerNibble, soundUpperNibble;
@@ -55,6 +54,5 @@ void RPU_PlaySoundSAndT(uint8_t soundByte) {
   interrupts();
 }
 
-} // namespace RPU
 
 #endif

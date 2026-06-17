@@ -2,7 +2,6 @@
 #include "RPU.h"
 #include "RPU_Internals.h"
 
-namespace RPU {
 
 volatile uint8_t SwitchManager::SwitchesMinus2[NUM_SWITCH_BYTES] = {};
 volatile uint8_t SwitchManager::SwitchesMinus1[NUM_SWITCH_BYTES] = {};
@@ -56,4 +55,3 @@ bool SwitchManager::getUpDownSwitchState() const { return UpDownSwitch; }
 void SwitchManager::clearUpDownSwitchState() { UpDownSwitch = false; }
 #endif
 
-} // namespace RPU

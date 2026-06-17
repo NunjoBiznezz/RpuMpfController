@@ -6,7 +6,6 @@
 #include "CircularStack.h"
 #include "TimedStack.h"
 
-namespace RPU {
 
 #if (RPU_OS_HARDWARE_REV > 2)
 constexpr uint8_t SOL_STACK_CAPACITY = 150;
@@ -94,6 +93,5 @@ private:
 #endif
 };
 
-} // namespace RPU
 
 #endif // SOLENOID_MANAGER_H

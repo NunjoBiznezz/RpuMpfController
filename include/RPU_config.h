@@ -44,7 +44,6 @@
 
 #include <stdint.h>
 
-namespace RPU {
    /*
     *   Plug-in board architectures (0-99 is for J5, 100-199 is for CPU socket)
     *
@@ -205,4 +204,3 @@ constexpr uint16_t RPU_OS_ALL_DIGITS_MASK = 0x7F;
 
 #endif
 
-}

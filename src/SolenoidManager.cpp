@@ -2,7 +2,6 @@
 #include "RPU.h"
 #include "RPU_Internals.h"
 
-namespace RPU {
 
 SolenoidManager::EnabledStack SolenoidManager::Stack;
 volatile uint8_t SolenoidManager::CurrentSolenoidByte = 0xFF;
@@ -153,4 +152,3 @@ uint8_t SolenoidManager::readContinuousSolenoids() {
 
 #endif
 
-} // namespace RPU

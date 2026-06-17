@@ -24,7 +24,6 @@
 
 #include <stdint.h>
 
-namespace RPU {
 
 constexpr uint8_t RPU_OS_MAJOR_VERSION = 5;
 constexpr uint8_t RPU_OS_MINOR_VERSION = 7;
@@ -198,4 +197,3 @@ extern volatile uint8_t DisplayText[2][RPU_OS_NUM_DIGITS];
 #endif
 #endif
 
-} // namespace RPU

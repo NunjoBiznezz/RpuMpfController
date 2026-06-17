@@ -22,7 +22,6 @@
 
 #include <stdint.h>
 
-namespace RPU {
 
 /**
  * CircularStack - A generic circular buffer/stack implementation
@@ -136,4 +135,3 @@ template <typename T, uint8_t SIZE, T EMPTY_VALUE> class CircularStack {
    }
 };
 
-} // namespace RPU

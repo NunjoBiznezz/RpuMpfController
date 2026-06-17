@@ -4,7 +4,6 @@
 
 #include <Arduino.h>
 
-namespace RPU {
 
 // With hardware rev 1, this function relies on D13 being connected to A5 because it writes to address 0xA0
 // A0  - A0   0
@@ -41,4 +40,3 @@ void RPU_PlaySB100Chime(uint8_t soundByte) {
 #endif
 #endif
 
-} // namespace RPU

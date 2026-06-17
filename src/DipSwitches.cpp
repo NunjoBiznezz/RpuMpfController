@@ -8,7 +8,6 @@
 #include "RPU_Internals.h"
 #include <Arduino.h>
 
-namespace RPU {
 
    static uint8_t DipSwitches[4];
 
@@ -56,6 +55,5 @@ namespace RPU {
       return DipSwitches[index];
    }
 
-}  // namespace RPU
 
 #endif

@@ -4,7 +4,6 @@
 
 #include "RPU.h"
 
-namespace RPU {
 #if defined(RPU_OS_USE_WTYPE_2_SOUND)
 unsigned short SoundLowerLimit = 0x0000;
 unsigned short SoundUpperLimit = 0x0080;
@@ -89,6 +88,5 @@ void RPU_UpdateTimedSoundStack(unsigned long curTime) {
    }
 }
 
-} // namespace RPU
 
 #endif

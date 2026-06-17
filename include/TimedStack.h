@@ -22,7 +22,6 @@
 
 #include <stdint.h>
 
-namespace RPU {
 
 /**
  * TimedStack - A fixed-size array of timed entries
@@ -79,4 +78,3 @@ template <typename EntryType, uint8_t SIZE> class TimedStack {
    }
 };
 
-} // namespace RPU
