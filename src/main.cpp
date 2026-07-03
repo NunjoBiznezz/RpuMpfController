@@ -8,10 +8,6 @@ static SternTrident machine;
 
 constexpr uint32_t SERIAL_BAUD = 115200;
 
-// Bitmask of solenoids held on via LISY_SOL_ON (bit i = solenoid i).
-// Re-pushed to RPU's solenoid stack every loop iteration while set.
-static uint32_t solenoidOnMask = 0;
-
 // LISY type-3 (7-segment) bit encoding per the protocol spec:
 //   bit7=dp, bit6=g, bit5=f, bit4=e, bit3=d, bit2=a, bit1=b, bit0=c
 // Returns the BCD digit (0-9) for a recognizable segment pattern, or 0xFF for blank/unknown.
@@ -48,7 +44,7 @@ static void consumeString() {
 
 // Handle a LISY display command (command byte already consumed).
 // Reads [byte_count, seg_byte…] from serial, decodes segment bytes to BCD,
-// and drives the RPU display at displayIdx.
+// and drives the machine display at displayIdx.
 static void handleDisplayCmd(uint8_t displayIdx) {
     uint8_t byteCount = readByte();
 
@@ -66,32 +62,24 @@ static void handleDisplayCmd(uint8_t displayIdx) {
     }
 
     if (displayIdx < machine.numDisplays()) {
-        RPU_SetDisplay(displayIdx, value, false, 1);
-        RPU_SetDisplayBlank(displayIdx, blankMask);
+        machine.setDisplay(displayIdx, value, blankMask);
     }
 }
 
 void setup() {
     Serial.begin(SERIAL_BAUD);
-    RPU_InitializeMPU(RPU_CMD_INIT_AND_RETURN_EVEN_IF_ORIGINAL_CHOSEN);
-    machine.initAudio();
+    machine.setup();
 }
 
 void loop() {
     unsigned long now = millis();
-    RPU_ApplyFlashToLamps(now);
-
-    if (solenoidOnMask) {
-        for (uint8_t i = 0; i < machine.numSolenoids() && i < 32; i++) {
-            if (solenoidOnMask & (1u << i)) RPU_PushToSolenoidStack(i, 1);
-        }
-    }
+    machine.loop(now);
 
     if (!Serial.available()) return;
 
     uint8_t cmd = (uint8_t)Serial.read();
 
-    // Display commands occupy a contiguous range: 30 + display_index.
+    // Display commands occupy a contiguous range: 0x1E + display_index.
     if (cmd >= LISY_DISPLAY_0 && cmd < LISY_DISPLAY_0 + machine.numDisplays()) {
         handleDisplayCmd(cmd - LISY_DISPLAY_0);
         return;
@@ -127,6 +115,10 @@ void loop() {
             Serial.write(machine.numSolenoids());
             break;
 
+        case LISY_INFO_GET_NUM_SOUNDS:
+            Serial.write(machine.numSounds());
+            break;
+
         case LISY_INFO_GET_NUM_DISPLAYS:
             Serial.write(machine.numDisplays());
             break;
@@ -148,21 +140,7 @@ void loop() {
             break;
         }
 
-        // ── Switches (stubbed — always report not present / no change) ────
-        case LISY_SWITCH_GET_STATUS:
-            readByte(); // consume switch number
-            Serial.write(2); // 2 = not present
-            break;
-
-        case LISY_SWITCH_GET_CHANGED:
-            Serial.write(0x7F); // no changes
-            break;
-
         // ── Sounds ────────────────────────────────────────────────────────
-        case LISY_INFO_GET_NUM_SOUNDS:
-            Serial.write(machine.numSounds());
-            break;
-
         case LISY_SOUND_PLAY:
             machine.playSound(readByte());
             break;
@@ -183,19 +161,19 @@ void loop() {
         // ── Solenoids ─────────────────────────────────────────────────────
         case LISY_SOL_PULSE: {
             uint8_t sol = readByte();
-            if (sol < machine.numSolenoids()) RPU_PushToSolenoidStack(sol, 1);
+            if (sol < machine.numSolenoids()) machine.fireSolenoid(sol);
             break;
         }
 
         case LISY_SOL_ON: {
             uint8_t sol = readByte();
-            if (sol < machine.numSolenoids() && sol < 32) solenoidOnMask |= (1u << sol);
+            if (sol < machine.numSolenoids()) machine.setSolenoidOn(sol);
             break;
         }
 
         case LISY_SOL_OFF: {
             uint8_t sol = readByte();
-            if (sol < 32) solenoidOnMask &= ~(1u << sol);
+            machine.setSolenoidOff(sol);
             break;
         }
 
@@ -207,11 +185,21 @@ void loop() {
 
         // ── Lamps ─────────────────────────────────────────────────────────
         case LISY_LAMP_ON:
-            RPU_SetLampState(readByte(), 1);
+            machine.setLamp(readByte(), true);
             break;
 
         case LISY_LAMP_OFF:
-            RPU_SetLampState(readByte(), 0);
+            machine.setLamp(readByte(), false);
+            break;
+
+        // ── Switches (stubbed — always report not present / no change) ────
+        case LISY_SWITCH_GET_STATUS:
+            readByte(); // consume switch number
+            Serial.write(2); // 2 = not present
+            break;
+
+        case LISY_SWITCH_GET_CHANGED:
+            Serial.write(0x7F); // no changes
             break;
 
         // ── Watchdog (stubbed — no timeout action) ────────────────────────
