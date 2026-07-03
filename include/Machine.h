@@ -2,7 +2,11 @@
 #include <stdint.h>
 
 class Machine {
-    uint32_t solenoidOnMask = 0;
+    static constexpr uint8_t kSwitchQueueSize = 16;
+    uint8_t  switchQueue[kSwitchQueueSize];
+    uint8_t  switchQueueHead = 0;
+    uint8_t  switchQueueTail = 0;
+    uint32_t solenoidOnMask  = 0;
 
 public:
     // ── Resource counts (machine must implement) ───────────────────────────
@@ -17,6 +21,12 @@ public:
     // ── Lifecycle ──────────────────────────────────────────────────────────
     virtual void setup();
     virtual void loop(unsigned long now);
+
+    // ── Switches ───────────────────────────────────────────────────────────
+    // Dequeues one switch-change event encoded as the LISY byte
+    // (bit7=state, bits0-6=switchNum). Returns false if no events pending.
+    bool    getNextSwitchChange(uint8_t &lisyByte);
+    uint8_t getSwitchState(uint8_t n) const;
 
     // ── Hardware writes ────────────────────────────────────────────────────
     virtual void setLamp(uint8_t n, bool state);

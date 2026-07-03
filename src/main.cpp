@@ -192,15 +192,16 @@ void loop() {
             machine.setLamp(readByte(), false);
             break;
 
-        // ── Switches (stubbed — always report not present / no change) ────
+        // ── Switches ──────────────────────────────────────────────────────
         case LISY_SWITCH_GET_STATUS:
-            readByte(); // consume switch number
-            Serial.write(2); // 2 = not present
+            Serial.write(machine.getSwitchState(readByte()));
             break;
 
-        case LISY_SWITCH_GET_CHANGED:
-            Serial.write(0x7F); // no changes
+        case LISY_SWITCH_GET_CHANGED: {
+            uint8_t lisyByte;
+            Serial.write(machine.getNextSwitchChange(lisyByte) ? lisyByte : 0x7F);
             break;
+        }
 
         // ── Watchdog (stubbed — no timeout action) ────────────────────────
         case LISY_WATCHDOG:
