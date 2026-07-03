@@ -8,6 +8,10 @@ static SternTrident machine;
 
 constexpr uint32_t SERIAL_BAUD = 115200;
 
+// Bitmask of solenoids held on via LISY_SOL_ON (bit i = solenoid i).
+// Re-pushed to RPU's solenoid stack every loop iteration while set.
+static uint32_t solenoidOnMask = 0;
+
 // LISY type-3 (7-segment) bit encoding per the protocol spec:
 //   bit7=dp, bit6=g, bit5=f, bit4=e, bit3=d, bit2=a, bit1=b, bit0=c
 // Returns the BCD digit (0-9) for a recognizable segment pattern, or 0xFF for blank/unknown.
@@ -68,7 +72,14 @@ void setup() {
 }
 
 void loop() {
-    RPU_ApplyFlashToLamps(millis());
+    unsigned long now = millis();
+    RPU_ApplyFlashToLamps(now);
+
+    if (solenoidOnMask) {
+        for (uint8_t i = 0; i < machine.numSolenoids() && i < 32; i++) {
+            if (solenoidOnMask & (1u << i)) RPU_PushToSolenoidStack(i, 1);
+        }
+    }
 
     if (!Serial.available()) return;
 
@@ -139,6 +150,31 @@ void loop() {
 
         case LISY_SWITCH_GET_CHANGED:
             Serial.write(0x7F); // no changes
+            break;
+
+        // ── Solenoids ─────────────────────────────────────────────────────
+        case LISY_SOL_PULSE: {
+            uint8_t sol = readByte();
+            if (sol < machine.numSolenoids()) RPU_PushToSolenoidStack(sol, 1);
+            break;
+        }
+
+        case LISY_SOL_ON: {
+            uint8_t sol = readByte();
+            if (sol < machine.numSolenoids() && sol < 32) solenoidOnMask |= (1u << sol);
+            break;
+        }
+
+        case LISY_SOL_OFF: {
+            uint8_t sol = readByte();
+            if (sol < 32) solenoidOnMask &= ~(1u << sol);
+            break;
+        }
+
+        case LISY_SOL_SET_PULSE_TIME:
+        case LISY_SOL_SET_RECYCLE_TIME:
+            readByte(); // solenoid_num
+            readByte(); // time_ms — no RPU API to set per-solenoid timing dynamically
             break;
 
         // ── Lamps ─────────────────────────────────────────────────────────
