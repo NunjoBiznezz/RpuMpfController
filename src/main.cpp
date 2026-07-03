@@ -2,10 +2,9 @@
 #include "RPU.h"
 #include "RPU_config.h"
 #include "lisy_protocol.h"
-
-// TODO: abstract this
 #include "machines/stern_trident.h"
 
+static SternTrident machine;
 
 constexpr uint32_t SERIAL_BAUD = 115200;
 
@@ -49,7 +48,7 @@ static void handleDisplayCmd(uint8_t displayIdx) {
 
     for (uint8_t i = 0; i < byteCount; i++) {
         uint8_t seg = readByte();
-        if (i < MACHINE_DISPLAY_DIGITS) {
+        if (i < machine.displayDigits(displayIdx)) {
             uint8_t bcd = segToBcd(seg);
             bool    lit = (bcd <= 9);
             value     = value * 10 + (lit ? bcd : 0);
@@ -57,7 +56,7 @@ static void handleDisplayCmd(uint8_t displayIdx) {
         }
     }
 
-    if (displayIdx < MACHINE_NUM_DISPLAYS) {
+    if (displayIdx < machine.numDisplays()) {
         RPU_SetDisplay(displayIdx, value, false, 1);
         RPU_SetDisplayBlank(displayIdx, blankMask);
     }
@@ -76,7 +75,7 @@ void loop() {
     uint8_t cmd = (uint8_t)Serial.read();
 
     // Display commands occupy a contiguous range: 30 + display_index.
-    if (cmd >= LISY_DISPLAY_0 && cmd < LISY_DISPLAY_0 + MACHINE_NUM_DISPLAYS) {
+    if (cmd >= LISY_DISPLAY_0 && cmd < LISY_DISPLAY_0 + machine.numDisplays()) {
         handleDisplayCmd(cmd - LISY_DISPLAY_0);
         return;
     }
@@ -104,30 +103,30 @@ void loop() {
             break;
 
         case LISY_INFO_GET_NUM_LAMPS:
-            Serial.write((uint8_t)MACHINE_NUM_LAMPS);
+            Serial.write(machine.numLamps());
             break;
 
         case LISY_INFO_GET_NUM_SOLENOIDS:
-            Serial.write((uint8_t)MACHINE_NUM_SOLENOIDS);
+            Serial.write(machine.numSolenoids());
             break;
 
         case LISY_INFO_GET_NUM_DISPLAYS:
-            Serial.write((uint8_t)MACHINE_NUM_DISPLAYS);
+            Serial.write(machine.numDisplays());
             break;
 
         case LISY_INFO_GET_SWITCH_COUNT:
-            Serial.write((uint8_t)MACHINE_NUM_SWITCHES);
+            Serial.write(machine.numSwitches());
             break;
 
         case LISY_GET_MODERN_LIGHTS_COUNT:
-            Serial.write(0x00); // no RGB LEDs on Trident
+            Serial.write(machine.numModernLights());
             break;
 
         case LISY_INFO_GET_DISPLAY_DETAILS: {
             uint8_t idx = readByte();
-            if (idx < MACHINE_NUM_DISPLAYS) {
-                Serial.write((uint8_t)MACHINE_DISPLAY_TYPE);
-                Serial.write((uint8_t)MACHINE_DISPLAY_DIGITS);
+            if (idx < machine.numDisplays()) {
+                Serial.write(machine.displayType(idx));
+                Serial.write(machine.displayDigits(idx));
             }
             break;
         }
