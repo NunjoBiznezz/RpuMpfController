@@ -41,6 +41,11 @@ static uint8_t readByte() {
     return (uint8_t)Serial.read();
 }
 
+// Consume a null-terminated string from serial (payload of LISY_SOUND_PLAY_FILE / TTS).
+static void consumeString() {
+    while (readByte() != 0x00);
+}
+
 // Handle a LISY display command (command byte already consumed).
 // Reads [byte_count, seg_byte…] from serial, decodes segment bytes to BCD,
 // and drives the RPU display at displayIdx.
@@ -69,6 +74,7 @@ static void handleDisplayCmd(uint8_t displayIdx) {
 void setup() {
     Serial.begin(SERIAL_BAUD);
     RPU_InitializeMPU(RPU_CMD_INIT_AND_RETURN_EVEN_IF_ORIGINAL_CHOSEN);
+    machine.initAudio();
 }
 
 void loop() {
@@ -150,6 +156,28 @@ void loop() {
 
         case LISY_SWITCH_GET_CHANGED:
             Serial.write(0x7F); // no changes
+            break;
+
+        // ── Sounds ────────────────────────────────────────────────────────
+        case LISY_INFO_GET_NUM_SOUNDS:
+            Serial.write(machine.numSounds());
+            break;
+
+        case LISY_SOUND_PLAY:
+            machine.playSound(readByte());
+            break;
+
+        case LISY_SOUND_STOP_ALL:
+            machine.stopAllSounds();
+            break;
+
+        case LISY_SOUND_SET_VOLUME:
+            readByte(); // no RPU API for volume control
+            break;
+
+        case LISY_SOUND_PLAY_FILE:
+        case LISY_SOUND_TTS:
+            consumeString(); // not applicable for native sound hardware
             break;
 
         // ── Solenoids ─────────────────────────────────────────────────────
