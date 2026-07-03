@@ -8,29 +8,15 @@ void Machine::setup() {
 
 void Machine::loop(unsigned long now) {
     RPU_ApplyFlashToLamps(now);
-
-    // Drain RPU switch stack, encode each event as LISY byte, buffer it.
-    uint8_t sw;
-    while ((sw = RPU_PullFirstFromSwitchStack()) != SWITCH_STACK_EMPTY) {
-        if (sw < numSwitches()) {
-            uint8_t next = (switchQueueTail + 1) % kSwitchQueueSize;
-            if (next != switchQueueHead) { // drop if full
-                uint8_t state = RPU_ReadSingleSwitchState(sw) ? 0x80 : 0x00;
-                switchQueue[switchQueueTail] = state | (sw & 0x7F);
-                switchQueueTail = next;
-            }
-        }
-    }
-
     for (uint8_t i = 0; i < numSolenoids() && i < 32; i++) {
         if (solenoidOnMask & (1u << i)) RPU_PushToSolenoidStack(i, 1);
     }
 }
 
 bool Machine::getNextSwitchChange(uint8_t &lisyByte) {
-    if (switchQueueHead == switchQueueTail) return false;
-    lisyByte = switchQueue[switchQueueHead];
-    switchQueueHead = (switchQueueHead + 1) % kSwitchQueueSize;
+    uint8_t sw = RPU_PullFirstFromSwitchStack();
+    if (sw == SWITCH_STACK_EMPTY || sw >= numSwitches()) return false;
+    lisyByte = (RPU_ReadSingleSwitchState(sw) ? 0x80 : 0x00) | (sw & 0x7F);
     return true;
 }
 

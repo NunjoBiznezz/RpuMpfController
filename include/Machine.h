@@ -2,11 +2,7 @@
 #include <stdint.h>
 
 class Machine {
-    static constexpr uint8_t kSwitchQueueSize = 16;
-    uint8_t  switchQueue[kSwitchQueueSize];
-    uint8_t  switchQueueHead = 0;
-    uint8_t  switchQueueTail = 0;
-    uint32_t solenoidOnMask  = 0;
+    uint32_t solenoidOnMask = 0;
 
 public:
     // ── Resource counts (machine must implement) ───────────────────────────
