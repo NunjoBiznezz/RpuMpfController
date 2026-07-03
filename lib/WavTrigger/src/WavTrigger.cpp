@@ -38,6 +38,7 @@ static constexpr uint8_t EOM = 0x55;
 void WavTrigger::start(void) {
    versionRcvd_ = false;
    sysinfoRcvd_ = false;
+   serial_.begin(57600);
    flush();
 
    requestVersion();
@@ -85,10 +86,12 @@ void WavTrigger::flush(void) {
 
 // **************************************************************
 void WavTrigger::update(void) {
-   // int i;
-   // uint8_t dat;
-   // uint8_t voice;
-   // uint16_t track;
+
+   // Not gonna work unless an RX is wired in. Rev 3 and below do not have it
+   // BUT you can jumper onto the Rev3
+   if (!hasSerialRx) {
+      return;
+   }
 
    rxMsgReady_ = false;
    while (serial_.available() > 0) {
@@ -140,6 +143,7 @@ void WavTrigger::update(void) {
                   voiceTable_[voice] = track;
                }
             }
+
             if (listener_) {
                // int16_t gain = static_cast<int16_t>(rxMessage[5]);
                // bool isLooping = (rxMessage[6] != 0);

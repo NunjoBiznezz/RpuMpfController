@@ -1,9 +1,9 @@
-#include "RPU_config.h"
-#include "RPU_Internals.h"
 #include "RPU.h"
-
+#include "RPU_config.h"
+#include "RPU_Internal.h"
 #include <Arduino.h>
 
+extern void RPU_DataWrite(int address, uint8_t data);
 
 // With hardware rev 1, this function relies on D13 being connected to A5 because it writes to address 0xA0
 // A0  - A0   0
@@ -39,4 +39,3 @@ void RPU_PlaySB100Chime(uint8_t soundByte) {
 }
 #endif
 #endif
-

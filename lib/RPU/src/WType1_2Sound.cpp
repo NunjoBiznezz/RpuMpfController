@@ -2,8 +2,11 @@
 
 #if defined(RPU_OS_USE_WTYPE_1_SOUND) || defined(RPU_OS_USE_WTYPE_2_SOUND)
 
+#include <stdint.h>
 #include "RPU.h"
+#include "RPU_Internal.h"
 
+namespace RPU {
 #if defined(RPU_OS_USE_WTYPE_2_SOUND)
 unsigned short SoundLowerLimit = 0x0000;
 unsigned short SoundUpperLimit = 0x0080;
@@ -11,6 +14,21 @@ unsigned short SoundUpperLimit = 0x0080;
 unsigned short SoundLowerLimit = 0x0100;
 unsigned short SoundUpperLimit = 0x1F00;
 #endif
+
+#define SOUND_STACK_SIZE  64
+#define SOUND_STACK_EMPTY 0x0000
+volatile uint8_t SoundStackFirst;
+volatile uint8_t SoundStackLast;
+volatile uint16_t SoundStack[SOUND_STACK_SIZE];
+
+#define TIMED_SOUND_STACK_SIZE  20
+struct TimedSoundEntry {
+   uint8_t inUse;
+   unsigned long pushTime;
+   unsigned short soundNumber;
+   uint8_t numPushes;
+};
+TimedSoundEntry TimedSoundStack[TIMED_SOUND_STACK_SIZE] = {0, 0, 0, 0};
 
 void RPU_SetSoundValueLimits(unsigned short lowerLimit, unsigned short upperLimit) {
    SoundLowerLimit = lowerLimit;
@@ -88,5 +106,6 @@ void RPU_UpdateTimedSoundStack(unsigned long curTime) {
    }
 }
 
+} // namespace RPU
 
 #endif

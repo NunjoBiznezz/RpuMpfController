@@ -1,5 +1,7 @@
-#include "RPU_config.h"
 #include "RPU.h"
+#include "RPU_config.h"
+#include "RPU_Internal.h"
+#include <Arduino.h>
 
 #ifdef RPU_OS_USE_DASH51
 
@@ -58,6 +60,5 @@ void RPU_PlaySoundDash51(uint8_t soundByte) {
 
    interrupts();
 }
-
 
 #endif

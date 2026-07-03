@@ -153,6 +153,13 @@ bit integer, -70dB to +10dB
       listener_ = newListener;
    }
 
+   // Rev 3 board lacks an RX line; can be overridden by soldering a jumper and defining WAVTRIGGER_LACKS_RX
+#if defined(WAVTRIGGER_LACKS_RX)
+   static constexpr bool hasSerialRx = false;
+#else
+   static constexpr bool hasSerialRx = true;
+#endif
+
  public:
    static constexpr int MAX_NUM_VOICES = 14;
    static constexpr int8_t UNITY_GAIN = 0;

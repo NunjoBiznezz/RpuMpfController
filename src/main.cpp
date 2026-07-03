@@ -3,6 +3,9 @@
 #include "RPU_config.h"
 #include "lisy_protocol.h"
 
+// TODO: abstract this
+#include "machines/stern_trident.h"
+
 
 constexpr uint32_t SERIAL_BAUD = 115200;
 

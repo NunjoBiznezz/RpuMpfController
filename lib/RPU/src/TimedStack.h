@@ -22,6 +22,20 @@
 
 #include <stdint.h>
 
+struct TimedSolenoidEntry {
+   uint8_t inUse;
+   unsigned long pushTime;
+   uint8_t solenoidNumber;
+   uint8_t numPushes;
+   uint8_t disableOverride;
+};
+
+struct TimedSoundEntry {
+   uint8_t inUse;
+   unsigned long pushTime;
+   unsigned short soundNumber;
+   uint8_t numPushes;
+};
 
 /**
  * TimedStack - A fixed-size array of timed entries
@@ -77,4 +91,3 @@ template <typename EntryType, uint8_t SIZE> class TimedStack {
       }
    }
 };
-
